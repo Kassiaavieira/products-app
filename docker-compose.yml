@@ -10,7 +10,9 @@ services:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/mydb
     depends_on:
       - db
-    command: /bin/sh -c "npx prisma migrate deploy && npm run start"
+    entrypoint: ["sh", "-c", "npx prisma migrate dev && yarn start"]
+    networks:
+      - app-network
 
   frontend:
     build:
@@ -19,6 +21,8 @@ services:
       - "3000:3000"
     depends_on:
       - backend
+    networks:
+      - app-network
 
   db:
     image: postgres:15
@@ -31,6 +35,12 @@ services:
       - "5432:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
+    networks:
+      - app-network
 
 volumes:
   db-data:
+
+networks:
+  app-network:
+    driver: bridge
