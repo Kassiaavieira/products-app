@@ -1,3 +1,4 @@
+import { useRouter } from 'next/navigation';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
@@ -11,12 +12,17 @@ interface Product {
 }
 
 interface ProductTableProps {
-  produtos: Product[];
+  produtos: Product[] | undefined;
   onEdit: (product: Product) => void;
   onDelete: (id: number) => void;
 }
 
 const ProductTable: React.FC<ProductTableProps> = ({ produtos, onEdit, onDelete }) => {
+  const router = useRouter();
+
+  const handleViewDetails = (id: number) => {
+    router.push(`/products/${id}`);
+  };
 
   const handleDelete = (id: number) => {
     confirmDialog({
@@ -26,7 +32,7 @@ const ProductTable: React.FC<ProductTableProps> = ({ produtos, onEdit, onDelete 
       accept: () => onDelete(id),
       reject: () => {},
       acceptLabel: 'Sim',
-      rejectLabel: 'Não'
+      rejectLabel: 'Não',
     });
   };
 
@@ -39,14 +45,15 @@ const ProductTable: React.FC<ProductTableProps> = ({ produtos, onEdit, onDelete 
         <Column
           header="Ações"
           body={(rowData) => (
-            <>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <Button label="Detalhes" onClick={() => handleViewDetails(rowData.id)} />
               <Button label="Editar" onClick={() => onEdit(rowData)} />
-              <Button 
-                label="Deletar" 
-                onClick={() => handleDelete(rowData.id)} 
-                className="p-button-danger" 
+              <Button
+                label="Deletar"
+                onClick={() => handleDelete(rowData.id)}
+                className="p-button-danger"
               />
-            </>
+            </div>
           )}
         />
       </DataTable>

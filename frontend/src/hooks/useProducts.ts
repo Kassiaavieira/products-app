@@ -19,6 +19,11 @@ const fetchProdutos = async (): Promise<Product[]> => {
   return data;
 };
 
+const fetchProductById = async (id: number): Promise<Product> => {
+  const { data } = await api.get(`/produtos/${id}`);
+  return data;
+};
+
 const createProduto = async (newProduct: NewProduct): Promise<Product> => {
   const { data } = await api.post('/produtos', newProduct);
   return data;
@@ -31,6 +36,14 @@ const updateProduto = async (id: number, updatedProduct: Partial<Product>): Prom
 
 const deleteProduto = async (id: number): Promise<void> => {
   await api.delete(`/produtos/${id}`);
+};
+
+export const useFetchProduct = (id: number) => {
+  return useQuery<Product, Error>({
+    queryKey: ['produto', id],
+    queryFn: () => fetchProductById(id),
+    enabled: !!id,
+  });
 };
 
 export const useProdutos = () => {
