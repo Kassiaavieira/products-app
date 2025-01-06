@@ -2,14 +2,14 @@ import {
   Controller,
   Get,
   Post,
-  Patch,
+  Put,
   Delete,
   Body,
   Param,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 
-@Controller('product')
+@Controller('produtos')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
@@ -19,12 +19,21 @@ export class ProductsController {
     return products;
   }
 
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    const product = await this.productsService.findById(Number(id));
+    if (!product) {
+      console.error(`Produto com ID ${id} não encontrado`);
+    }
+    return product;
+  }
+
   @Post()
   create(@Body() data: { name: string; price: number; amount: number }) {
     return this.productsService.create(data);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(
     @Param('id') id: string,
     @Body() data: { name?: string; price?: number; amount?: number },
