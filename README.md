@@ -19,6 +19,11 @@ Antes de começar, você precisará ter o seguinte instalado:
 - **Node.js** (versão 18.x ou superior): Para rodar o ambiente localmente (se não usar Docker).
 - **Yarn**: Gerenciador de pacotes (caso esteja usando Yarn).
 
+## Criar um arquivo .env.example mas consegue rodar sem ele também
+```bash
+NEXT_PUBLIC_API_URL=http://localhost:3001
+```
+
 ## Instalação e Execução
 
 ### 1. Configuração com Docker
