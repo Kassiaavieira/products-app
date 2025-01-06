@@ -2,60 +2,66 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../utils/api';
 
 interface Product {
-  id: string;
+  id: number;
   name: string;
   price: number;
   amount: number;
 }
 
-const fetchProducts = async (): Promise<Product[]> => {
+interface NewProduct {
+  name: string;
+  price: number;
+  amount: number;
+}
+
+const fetchProdutos = async (): Promise<Product[]> => {
   const { data } = await api.get('/produtos');
   return data;
 };
 
-const createProduct = async (newProduct: Product): Promise<Product> => {
+const createProduto = async (newProduct: NewProduct): Promise<Product> => {
   const { data } = await api.post('/produtos', newProduct);
   return data;
 };
 
-const updateProduct = async (id: string, updatedProduct: Partial<Product>): Promise<Product> => {
+const updateProduto = async (id: number, updatedProduct: Partial<Product>): Promise<Product> => {
   const { data } = await api.put(`/produtos/${id}`, updatedProduct);
   return data;
 };
 
-const deleteProduct = async (id: string): Promise<void> => {
+const deleteProduto = async (id: number): Promise<void> => {
   await api.delete(`/produtos/${id}`);
 };
 
-export const useProducts = () => {
+export const useProdutos = () => {
   const queryClient = useQueryClient();
 
-  const { data: products, isLoading } = useQuery<Product[]>({
-    queryKey: ['products'],
-    queryFn: fetchProducts,
+  const { data: produtos, isLoading } = useQuery<Product[]>({
+    queryKey: ['produtos'],
+    queryFn: fetchProdutos,
   });
 
-  const mutationCreateProduct = useMutation({
-    mutationFn: createProduct,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['products'] }),
+  const mutationCreateProduto = useMutation({
+    mutationFn: createProduto,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['produtos'] }),
   });
 
-  const mutationUpdateProduct = useMutation({
-    mutationFn: ({ id, updatedProduct }: { id: string; updatedProduct: Partial<Product> }) =>
-      updateProduct(id, updatedProduct),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['products'] }),
+  const mutationUpdateProduto = useMutation({
+    mutationFn: ({ id, updatedProduct }: { id: number; updatedProduct: Partial<Product> }) =>
+      updateProduto(id, updatedProduct),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['produtos'] }),
   });
 
-  const mutationDeleteProduct = useMutation({
-    mutationFn: deleteProduct,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['products'] }),
+  const mutationDeleteProduto = useMutation({
+    mutationFn: deleteProduto,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['produtos'] }),
   });
 
   return {
-    products,
+    produtos,
     isLoading,
-    createProduct: mutationCreateProduct,
-    updateProduct: mutationUpdateProduct,
-    deleteProduct: mutationDeleteProduct,
+    createProduto: mutationCreateProduto,
+    updateProduto: mutationUpdateProduto,
+    deleteProduto: mutationDeleteProduto,
   };
 };
